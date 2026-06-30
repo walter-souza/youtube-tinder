@@ -67,14 +67,10 @@ export default function App() {
   // Define a tela inicial baseada na existência de Client IDs
   useEffect(() => {
     const envId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
-    if (clientIds.length === 0 && !envId) {
-      setCurrentScreen('config');
-    } else {
-      if (!activeClientId) {
-        setActiveClientId(envId || clientIds[0]);
-      }
-      setCurrentScreen('auth');
+    if (envId && !activeClientId) {
+      setActiveClientId(envId);
     }
+    setCurrentScreen('auth');
   }, [clientIds, activeClientId]);
 
   // Worker de Fila em Background (Executa a cada segundo)
@@ -561,6 +557,24 @@ export default function App() {
             <p>
               Organize suas inscrições de forma rápida e divertida. Deslize para a esquerda para remover canais que você não assiste mais!
             </p>
+
+            {!activeClientId && (
+              <div 
+                style={{ 
+                  background: 'rgba(255, 71, 87, 0.1)', 
+                  border: '1px solid var(--color-unsub)', 
+                  padding: '15px', 
+                  borderRadius: '12px',
+                  marginBottom: '20px',
+                  fontSize: '0.85rem',
+                  color: '#fff',
+                  textAlign: 'left'
+                }}
+              >
+                <strong style={{ display: 'block', marginBottom: '4px' }}>⚠️ Google Client ID ausente</strong>
+                O login do Google está desativado. Certifique-se de configurar a variável de ambiente <code>VITE_GOOGLE_CLIENT_ID</code> no painel da Vercel e realizar um novo deploy.
+              </div>
+            )}
             
             {importedOffline && (
               <div 
@@ -578,7 +592,12 @@ export default function App() {
             )}
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '30px' }}>
-              <button className="btn" onClick={handleLogin}>
+              <button 
+                className="btn" 
+                onClick={handleLogin}
+                disabled={!activeClientId}
+                style={!activeClientId ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+              >
                 Conectar Conta do YouTube ↗
               </button>
               
