@@ -23,6 +23,7 @@ export default function Deck({
   };
 
   const handleSwipe = (direction) => {
+    setSwipeTrigger(null); // Reseta imediatamente para evitar que o próximo card herde o gatilho
     onSwipeAction(direction);
   };
 

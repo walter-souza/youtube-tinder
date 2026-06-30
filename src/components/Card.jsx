@@ -55,6 +55,7 @@ export default function Card({
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [flyOutDirection, setFlyOutDirection] = useState(null);
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   
   const cardRef = useRef(null);
   const dragStart = useRef({ x: 0, y: 0 });
@@ -281,7 +282,35 @@ export default function Card({
         </div>
 
         <div className="card-description">
-          {description}
+          {description.length > 160 ? (
+            isDescriptionExpanded ? (
+              <>
+                {description}{' '}
+                <span 
+                  role="button"
+                  style={{ color: 'var(--color-notify)', cursor: 'pointer', fontWeight: '600', marginLeft: '5px' }}
+                  onClick={(e) => { e.stopPropagation(); setIsDescriptionExpanded(false); }}
+                  onPointerDown={(e) => e.stopPropagation()}
+                >
+                  ver menos
+                </span>
+              </>
+            ) : (
+              <>
+                {description.slice(0, 160)}...{' '}
+                <span 
+                  role="button"
+                  style={{ color: 'var(--color-notify)', cursor: 'pointer', fontWeight: '600', marginLeft: '5px' }}
+                  onClick={(e) => { e.stopPropagation(); setIsDescriptionExpanded(true); }}
+                  onPointerDown={(e) => e.stopPropagation()}
+                >
+                  ver mais
+                </span>
+              </>
+            )
+          ) : (
+            description
+          )}
         </div>
 
         {/* Listagem dos Últimos 5 Vídeos */}
